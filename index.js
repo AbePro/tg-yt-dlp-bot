@@ -5,6 +5,8 @@ import { mkdtempSync, rmSync, readdirSync, statSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join, extname } from "node:path";
 import { promisify } from "node:util";
+import express from "express";
+
 
 const execFileAsync = promisify(execFile);
 
@@ -142,3 +144,9 @@ bot.action(["CHOICE_MP4", "CHOICE_MP3"], async (ctx) => {
 
 bot.launch();
 console.log("Bot running (long polling) …");
+
+// Minimal web server so Render Free "web service" stays happy
+const app = express();
+app.get("/", (_req, res) => res.status(200).send("tg-yt-dlp-bot is running"));
+const PORT = process.env.PORT || 10000;
+app.listen(PORT, () => console.log("HTTP server listening on", PORT));
